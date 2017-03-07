@@ -8,6 +8,7 @@
 //  Updated to Swift 3 9/26/16
 
 import UIKit
+import Foundation
 
 /**
  * PURPOSE:
@@ -31,6 +32,9 @@ import UIKit
  */
 class ViewController: UIViewController {
     
+    var count:Int = 100
+    
+    
     @IBOutlet weak var countdown: UILabel!
 
     /**
@@ -42,14 +46,26 @@ class ViewController: UIViewController {
      * 3) The countdown logic should be inside the provided performCountdown method
      * 4) DO NOT EDIT THE METHOD SIGNATURE
      */
+    @IBOutlet var Button: UIButton!
+    
+    
     @IBAction func countdownBtnClicked(sender: UIButton) {
-        
         // Disable the button
-        // performCountdown()
+        Button.isUserInteractionEnabled = false
+        if count < 0 {
+            count = 100
+        }
+        performCountdown(completion: {
+        })
         // Enable the button
 
     }
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+       
+    }
     /*
      * Counts down from 100 to 0 and updates the UILabel _countdown as the count changes
      *
@@ -62,9 +78,29 @@ class ViewController: UIViewController {
      */
     func performCountdown(completion: () -> Void) {
         
+        let anotherQueue = DispatchQueue(label: "com.appcoda.anotherQueue", qos: .userInitiated)
+        
+        anotherQueue.async {
+            for index in 0..<101{
+                print(index)
+                print("Count: \(self.count)")
+                DispatchQueue.main.async{
+                    print("Updated UILabel: \(self.count)")
+                    self.countdown.text = String(self.count)
+                }
+                Thread.sleep(forTimeInterval: 0.5)
+                self.count -= 1
+                print("Decrement Count: \(self.count)")
+            }
+            self.Button.isUserInteractionEnabled = true
+            print("Count Updated")
+           
+        }
+        
             // For 0 to 100 {
             // Pause the thread with this: NSThread.sleepForTimeInterval(0.5)
             //}
+//        completion()
     }
     
     
